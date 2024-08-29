@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetNiche</title>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'main/css/bootstrap.css' %}">
+    <!-- <script src="{% static 'main/js/bootstrap.js' %}"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'main/css/categories.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="{% static 'main/js/script.js' %}" defer></script>
+    <script src="{% static 'main/js/base.js' %}" defer></script>
+    <script src="{% static 'main/js/search.js' %}" defer></script>
+    <!-- <script src="{% static 'main/js/script-cart.js' %}" defer></script> -->
+    {% block links %}
+    {% endblock %}
+</head>
+<!-- z-3 position-fixed top-0 start-50 translate-middle-x w-100 -->
+
+<body>
+    <header class='z-3 position-fixed top-0 start-50 translate-middle-x w-100'>
+        <nav class="navbar bg-header">
+            <div class="container header-content d-flex justify-content-around align-items-center">
+                <a href="#" class="buttons-header">
+                    <img src="{% static 'main/img/burger.png' %}" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar" width="40px" alt="">
+                </a>
+                <a class="logo-header" href="{% url 'main' %}">
+                    <img src="{% static 'main/img/logo.png' %}" width="145px" alt="">
+                </a>
+                <div class="catalog-head">
+                    <button data-bs-toggle="modal" data-bs-target="#catalogModal" type="button"
+                        class="btn align-items-center btn-secondary d-flex gap-15">
+                        <img src="{% static 'main/img/catalog-header.png' %}" width="32px" alt="">
+                        <p class="montserrat-14 padding-margin-0">Каталог</p>
+                    </button>
+                </div>
+                <div class="search-bar">
+                    <form class="d-flex flex-column search-header" id="header-search" role="search">
+                        <input type="hidden" id="data-get-products-url"
+                            data-get-products-url="{% url 'get_product_names' %}">
+                        <div class="search-box d-flex position-relative">
+                            <input class="form-control border-radius-search-header" id="search-header" type="search"
+                                placeholder="Я шукаю...">
+                            <button class="btn btn-search" type="submit">Знайти</button>
+                        </div>
+                        <div style="display: none;" class="result-box">
+                        </div>
+                    </form>
+                </div>
+                <a class="auth-link d-none" href="{% url 'Info' %}">
+                    <img src="{% static 'main/img/logged-user.png' %}" alt="">
+                </a>
+                <a class="login-button" href="#" class="buttons-header" data-bs-toggle="modal"
+                    data-bs-target="#regModal">
+                    <img src="{% static 'main/img/auth.png' %}" width="40px" alt="">
+                </a>
+                {% csrf_token %}
+                <a href="#" id="backet-header" data-cart-url="{% url 'cart_view' %}" class="buttons-header">
+                    <div class="position-relative">
+                        <img src="{% static 'main/img/backet.png' %}" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasBacket" width="40px" alt="">
+                        <span
+                            class="incartproduct-amount badge d-none bg-danger position-absolute top-0 start-100 translate-middle">{{incartproductamount}}</span>
+                    </div>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <div class="modal fade" id="regModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 h1" id="exampleModalLabel">Реєстрація</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" class="form-reg-auth">
+                        {% csrf_token %}
+                        <p class="hello-user-register" name="error"></p>
+                        <p class="register-error h1"></p>
+                        <input type="text" name="email" class="reg-auth-field" placeholder="Email">
+                        <input type="text" name="login" class="reg-auth-field" placeholder="Username">
+                        <input type="password" name="password" class="reg-auth-field" placeholder="Password">
+                        <input type="password" name="repeat-password" class="reg-auth-field"
+                            placeholder="Repeat password">
+                        <button type="button" id="btn-register" data-cart-url="{% url 'Registration' %}"
+                            class="btn btn-primary btn-reg-auth">register</button>
+                    </form>
+                </div>
+                <div class="modal-footer form-reg-auth">
+                    <a href="#" class="h1" data-bs-toggle="modal" data-bs-target="#authModel">у мене вже є
+                        аккаунт</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="authModel" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 h1" id="authModalLabel">Авторизація</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" class="form-reg-auth" method="POST">
+                        {% csrf_token %}
+                        <p class="hello-user-login"></p>
+                        <p class="login-error h1"></p>
+                        <input type="text" name="username" class="reg-auth-field" placeholder="Username">
+                        <input type="password" name="loginPassword" class="reg-auth-field" placeholder="Password">
+                        <button type="button" id="btn-auth" data-cart-url="{% url 'Authorization' %}"
+                            class="btn btn-primary btn-reg-auth">login</button>
+                    </form>
+                </div>
+                <div class="modal-footer form-reg-auth">
+                    <a href="#" class="h1" id="btn-auth" data-bs-toggle="modal" data-bs-target="#regModal">у мене немає
+                        аккаунту</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header d-flex justify-content-around align-items-center padding-0 mx-4">
+                <a href="{% url 'main' %}">
+                    <img src="{% static 'main/img/logo.png' %}" width="150px" alt="">
+                </a>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column gap-15">
+                <a data-bs-toggle="modal" data-bs-target="#catalogModal" class="text-decoration-none mt-2 burger-item catalog-offcanvas"
+                    href="#">
+                    <div class="container d-flex align-items-center gap-15" type="button">
+                        <img class="burger-img" src="{% static 'main/img/burger-catalog.svg' %}" alt="">
+                        <h1 class="h1 padding-margin-0">Каталог товарів</h1>
+                    </div>
+                </a>
+                <a class="text-decoration-none burger-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBacket"
+                    href="#">
+                    <div class="container d-flex align-items-center gap-15">
+                        <img class="burger-img" src="{% static 'main/img/burger-bucket.svg' %}" alt="">
+                        <h1 class="h1 padding-margin-0">Кошик</h1>
+                    </div>
+                </a>
+                <a class="burger-auth text-decoration-none burger-item" data-bs-toggle="modal"
+                    data-bs-target="#authModel" href="#">
+                    <div class="container d-flex align-items-center gap-15">
+                        <img class="burger-img" src="{% static 'main/img/burger-auth.svg' %}" alt="">
+                        <h1 class="h1 padding-margin-0">Реєстрація/Вхід</h1>
+                    </div>
+                </a>
+
+                <a class="text-decoration-none burger-item" href="{% url 'About' %}">
+                    <div class="container d-flex align-items-center gap-15">
+                        <img class="burger-img" src="{% static 'main/img/burger-auth.svg' %}" alt="">
+                        <h1 class="h1 padding-margin-0">Про нас/Контакти</h1>
+                    </div>
+                </a>
+                <a class="burger-profile text-decoration-none burger-item d-none" href="{% url 'Info' %}">
+                    <div class="container d-flex align-items-center gap-15">
+                        <img class="burger-img" src="{% static 'main/img/user.svg' %}" alt="">
+                        <h1 class="h1 padding-margin-0">Мій профіль</h1>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="offcanvas offcanvas-end d-flex flex-column gap-15" tabindex="-1" id="offcanvasCategoryMobile"
+            aria-labelledby="offcanvasCategoryMobileLabel">
+            <button type="button" class="btn-close position-absolute m-2 end-0" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <div class="mt-5 d-flex justify-content-around flex-column gap-15">
+                {% for category in categorys %}
+                    <a href="{% url 'categories' category.slug %}" role="button" data-category-id="{{category.id}}"
+                        class="container width-100 category-name">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <p class="h1 padding-margin-0 text-decoration-none">{{category.name}}</p>
+                            </div>
+                            <div class="col-auto">
+                                <img src="{% static 'main/img/right-arrow.svg' %}" alt="">
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="catalogModal" tabindex="-1" aria-labelledby="catalogModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content d-flex flex-row align-items-start">
+                <div class="modal-body d-flex flex-column gap-15 catalogue-container">
+                    {% for category in categorys %}
+                    <a href="{% url 'categories' category.slug %}" role="button" data-category-id="{{category.id}}"
+                        class="container width-100 category-name">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <p class="h1 padding-margin-0 text-decoration-none">{{category.name}}</p>
+                            </div>
+                            <div class="col-auto">
+                                <img src="{% static 'main/img/right-arrow.svg' %}" alt="">
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer w-50">
+                    {% for category in categorys %}
+                    <div
+                        class="d-flex w-100 justify-content-center d-none align-items-center category-image-{{category.id}}">
+                        <img src="{{category.image.url}}" width="230px" alt="">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal fade" id="backetModal" tabindex="-1" aria-labelledby="backetModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content background-backet">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 h1" id="backetModalLabel">Кошик</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex gap-15 flex-column cart-wrap">
+                    {% include 'main/cart_items.html' %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Оформити замовлення</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasBacket" aria-labelledby="offcanvasBacketLabel">
+        <div class="offcanvas-header">
+            <h3 class="offcanvas-title" id="offcanvasRightLabel">Кошик</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex gap-15 flex-column cart-wrap backet-body">
+            {% include 'main/cart_items.html' %}
+        </div>
+        <div class='offcanvas-footer d-flex justify-content-center flex-column align-items-center py-2'>
+            <h2 class="cart-footer-price montserrat-16"></h2>
+            <a href="{% url 'checkout' %}"><button type='button' class='btn btn-primary h1'
+                    style='width: 350px; height: 50px;'>Оформити
+                    замовлення</button></a>
+        </div>
+    </div>
+</body>
+
+</html>

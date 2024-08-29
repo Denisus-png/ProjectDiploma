@@ -1,0 +1,60 @@
+{% include 'main/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container container-product">
+    <div class="img">
+        <img src="{{ product.image.url }}" alt="">
+    </div>
+    <div class="information d-flex flex-column gap-15">
+        <h1 class="h1">{{product.name}}</h1>
+        <hr>
+        <div class="container d-flex justify-content-around">
+            <p>{{product.article}}</p>
+            {% if product.available %}
+            <p>Товар в наявності</p>
+            {% else %}
+            <p>Товару немає в наявності</p>
+            {% endif %}
+        </div>
+        <hr>
+        <div class="container d-flex justify-content-around">
+            <p>{{product.price}} грн.</p>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="button" id="add-cart" data-cart-view-url="{% url 'cart_view' %}" data-cart-url="{% url 'cart' %}" class="btn btn-primary">Додати до
+                    кошику</button>
+            </form>
+        </div>
+        <p class="">{{product.description}}
+            <br>
+            <br>
+            <b>Матеріал:</b>
+            {{product.material}}
+            <br>
+            <br>
+            <b>Країна виробник:</b>
+            {{product.country}}
+            <br>
+            <br>
+            <b>Характеристики:</b>
+        <ul>
+            {% for i in characteristics %}
+            <li>{{i}}</li>
+            {% endfor %}
+        </ul>
+        <b>Сезон:</b>
+        Всесезонний;
+        <br>
+        <br>
+        <b>Рекомендації щодо догляду:</b>
+        <br>
+        <ul>
+            {% for i in guide %}
+            <li>{{i}}</li>
+            {% endfor %}
+        </ul>
+        </p>
+    </div>
+</div>
+{% endblock %}
